@@ -306,6 +306,7 @@ ScreenGui.IgnoreGuiInset = true
 
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
+local MENU_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
@@ -423,6 +424,22 @@ Logo.Text                   = "CUKY PUQY"
 Logo.TextColor3             = C.accent
 Logo.TextSize               = isMobile and 12 or 18
 Logo.TextXAlignment         = Enum.TextXAlignment.Center
+
+local MenuLogo = Instance.new("ImageLabel")
+MenuLogo.Name = "MenuLogo"
+MenuLogo.Parent = Sidebar
+MenuLogo.BackgroundColor3 = C.card
+MenuLogo.BorderSizePixel = 0
+MenuLogo.Position = UDim2.new(0.5, -24, 0, 8)
+MenuLogo.Size = UDim2.new(0, 48, 0, 48)
+MenuLogo.ScaleType = Enum.ScaleType.Crop
+MenuLogo.ZIndex = 3
+addCorner(MenuLogo, 24)
+local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu")
+if menuAsset then
+    MenuLogo.Image = menuAsset
+end
+
 local TabContainer = Instance.new("Frame")
 TabContainer.Parent                 = Sidebar
 TabContainer.BackgroundTransparency = 1
