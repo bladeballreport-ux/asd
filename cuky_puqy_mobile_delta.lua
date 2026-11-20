@@ -307,7 +307,7 @@ ScreenGui.IgnoreGuiInset = true
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
 local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
-local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
+local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
     local requestFn = request or http_request or (syn and syn.request)
