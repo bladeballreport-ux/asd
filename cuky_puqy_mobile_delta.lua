@@ -307,7 +307,7 @@ ScreenGui.IgnoreGuiInset = true
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
 local MENU_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
-local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
+local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
     local requestFn = request or http_request or (syn and syn.request)
@@ -342,6 +342,7 @@ local C = {
     off       = Color3.fromRGB(42,  42,  42),
     white     = Color3.fromRGB(255, 255, 255),
     orange    = Color3.fromRGB(220, 220, 220),
+    on        = Color3.fromRGB(48, 205, 112),
 }
 
 local function addStroke(parent, color, thickness)
@@ -373,11 +374,11 @@ local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y *
 local SIDE_W  = isMobile and 104 or 128
 
 local TOGGLE_H  = isMobile and 76 or 64
-local TOGGLE_W  = isMobile and 72 or 78
-local TOGGLE_SH = isMobile and 36 or 34
-local TOGGLE_CR = isMobile and 18 or 17
-local CIRCLE_SZ = isMobile and 28 or 26
-local CIRCLE_CR = isMobile and 14 or 13
+local TOGGLE_W  = isMobile and 62 or 68
+local TOGGLE_SH = isMobile and 29 or 30
+local TOGGLE_CR = isMobile and 15 or 15
+local CIRCLE_SZ = isMobile and 21 or 22
+local CIRCLE_CR = isMobile and 11 or 11
 local ICON_SZ   = isMobile and 18 or 16
 local LABEL_SZ  = isMobile and 13 or 13
 
@@ -699,7 +700,10 @@ local function createCard(parent, yOffset, height)
     card.BorderSizePixel = 0
     card.Position = UDim2.new(0, 0, 0, yOffset)
     card.Size = UDim2.new(1, 0, 0, height)
-    addCorner(card, isMobile and 14 or 12); addStroke(card, C.border, 1.2)
+    card.ClipsDescendants = true
+    addCorner(card, isMobile and 16 or 14)
+    addStroke(card, C.border, 1.35)
+    addGradient(card, Color3.fromRGB(30, 30, 30), Color3.fromRGB(13, 13, 13), 90)
     return card
 end
 
@@ -724,7 +728,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     label.TextXAlignment = Enum.TextXAlignment.Left
 
     local switchBg = Instance.new("Frame")
-    switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.accent or C.off
+    switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.on or C.off
     switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.28, -(TOGGLE_SH / 2))
     switchBg.Size = UDim2.new(0, TOGGLE_W, 0, TOGGLE_SH)
     switchBg.ZIndex = 3; addCorner(switchBg, TOGGLE_CR)
@@ -743,22 +747,22 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     badge.Size = UDim2.new(0, TOGGLE_W, 0, 14)
     badge.Font = Enum.Font.GothamBold
     badge.Text = default and "ON" or "OFF"
-    badge.TextColor3 = default and C.accent or C.subtext
+    badge.TextColor3 = default and C.on or C.subtext
     badge.TextSize = isMobile and 11 or 10; badge.ZIndex = 4
 
     local state = default
     local function toggle()
         state = not state
-        switchBg.BackgroundColor3 = state and C.accent or C.off
+        switchBg.BackgroundColor3 = state and C.on or C.off
         badge.Text = state and "ON" or "OFF"
-        badge.TextColor3 = state and C.accent or C.subtext
+        badge.TextColor3 = state and C.on or C.subtext
         knob:TweenPosition(
             state and UDim2.new(1, -(CIRCLE_SZ + 4), 0.5, -(CIRCLE_SZ / 2))
                    or  UDim2.new(0, 4, 0.5, -(CIRCLE_SZ / 2)),
             "Out", "Quad", 0.15, true)
         local stroke = card:FindFirstChildOfClass("UIStroke")
         if stroke then
-            stroke.Color = state and C.accent or C.border
+            stroke.Color = state and C.on or C.border
             task.delay(0.3, function()
                 if stroke and stroke.Parent then stroke.Color = C.border end
             end)
@@ -768,9 +772,9 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     hitArea.Activated:Connect(toggle)
     return function(v)
         state = v
-        switchBg.BackgroundColor3 = state and C.accent or C.off
+        switchBg.BackgroundColor3 = state and C.on or C.off
         badge.Text = state and "ON" or "OFF"
-        badge.TextColor3 = state and C.accent or C.subtext
+        badge.TextColor3 = state and C.on or C.subtext
         knob.Position = state
             and UDim2.new(1, -(CIRCLE_SZ + 4), 0.5, -(CIRCLE_SZ / 2))
             or  UDim2.new(0, 4, 0.5, -(CIRCLE_SZ / 2))
@@ -1276,11 +1280,16 @@ local function TriggerMobileButton()
         local p, s, i = b.AbsolutePosition, b.AbsoluteSize, GuiService:GetGuiInset()
         local cx = p.X + (s.X/2) + i.X
         local cy = p.Y + (s.Y/2) + i.Y
+        -- The overlay can sit above the game's mobile button. Temporarily disable
+        -- only this script's ScreenGui while sending the synthetic tap.
+        local wasEnabled = ScreenGui and ScreenGui.Enabled
+        if wasEnabled then ScreenGui.Enabled = false end
         pcall(function()
             VirtualInputManager:SendTouchEvent(TouchID, 0, cx, cy)
             task.wait(0.01)
             VirtualInputManager:SendTouchEvent(TouchID, 2, cx, cy)
         end)
+        if wasEnabled and ScreenGui then ScreenGui.Enabled = true end
     end
 end
 
