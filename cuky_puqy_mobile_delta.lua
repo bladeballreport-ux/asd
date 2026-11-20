@@ -306,7 +306,7 @@ ScreenGui.IgnoreGuiInset = true
 
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
-local MENU_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
+local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
 local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
@@ -641,7 +641,8 @@ local function createTabFrame(name)
     f.ScrollBarThickness     = isMobile and 3 or 2
     f.ScrollBarImageColor3   = C.accent
     f.Visible                = false
-    f.CanvasSize             = UDim2.new(0, 0, 0, 1400)
+    f.CanvasSize             = UDim2.new(0, 0, 0, 0)
+    f.AutomaticCanvasSize     = Enum.AutomaticSize.Y
     f.ScrollingEnabled       = true
     local pad = Instance.new("UIPadding")
     pad.Parent = f; pad.PaddingLeft = UDim.new(0, 10)
