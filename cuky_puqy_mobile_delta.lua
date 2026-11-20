@@ -378,9 +378,9 @@ local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 52
 local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
 local SIDE_W  = isMobile and 112 or 136
 
-local TOGGLE_H  = isMobile and 62 or 54
-local TOGGLE_W  = isMobile and 52 or 56
-local TOGGLE_SH = isMobile and 24 or 24
+local TOGGLE_H  = isMobile and 58 or 52
+local TOGGLE_W  = isMobile and 50 or 54
+local TOGGLE_SH = 23
 local TOGGLE_CR = 12
 local CIRCLE_SZ = isMobile and 18 or 18
 local CIRCLE_CR = 9
@@ -453,7 +453,7 @@ SearchBox.Parent = Sidebar
 SearchBox.BackgroundColor3 = C.card
 SearchBox.BorderSizePixel = 0
 SearchBox.Position = UDim2.new(0, 9, 0, 91)
-SearchBox.Size = UDim2.new(1, -18, 0, 27)
+SearchBox.Size = UDim2.new(1, -18, 0, 30)
 SearchBox.Font = Enum.Font.Gotham
 SearchBox.Text = ""
 SearchBox.PlaceholderText = "Search feature..."
@@ -477,7 +477,7 @@ TabContainer.Position               = UDim2.new(0, 9, 0, 128)
 TabContainer.Size                   = UDim2.new(1, -18, 1, -136)
 local TabListLayout = Instance.new("UIListLayout")
 TabListLayout.Parent  = TabContainer
-TabListLayout.Padding = UDim.new(0, 9)
+TabListLayout.Padding = UDim.new(0, 8)
 
 -- ========================
 -- CONTENT AREA
@@ -689,7 +689,7 @@ for _, t in pairs(tabs) do
     local btn = Instance.new("TextButton")
     btn.Parent           = TabContainer
     btn.BackgroundColor3 = C.card
-    btn.Size             = UDim2.new(1, 0, 0, isMobile and 44 or 40)
+    btn.Size             = UDim2.new(1, 0, 0, isMobile and 38 or 36)
     btn.Font             = Enum.Font.GothamMedium
     btn.Text             = t.name
     btn.TextColor3       = C.subtext
@@ -737,8 +737,8 @@ local function createCard(parent, yOffset, height)
     card.Size = UDim2.new(1, 0, 0, height)
     addCorner(card, isMobile and 13 or 12)
     local cardStroke = addStroke(card, C.border, 1)
-    cardStroke.Transparency = 0.22
-    addGradient(card, Color3.fromRGB(29, 33, 40), Color3.fromRGB(18, 20, 25), 90)
+    cardStroke.Transparency = 0.18
+    addGradient(card, Color3.fromRGB(27, 31, 38), Color3.fromRGB(19, 22, 28), 90)
     return card
 end
 
@@ -752,7 +752,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     local iconLbl = Instance.new("TextLabel")
     iconLbl.Parent = card; iconLbl.BackgroundTransparency = 1
     iconLbl.Position = UDim2.new(0, 10, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
-    iconLbl.Font = FONT_HEAD
+    iconLbl.Font = Enum.Font.GothamBold
     iconLbl.Text = icon
     iconLbl.TextColor3 = C.subtext
     iconLbl.TextSize = ICON_SZ
@@ -763,7 +763,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     label.Parent = card; label.BackgroundTransparency = 1
     label.Position = UDim2.new(0, 44, 0, 0)
     label.Size = UDim2.new(1, -(TOGGLE_W + 66), 1, 0)
-    label.Font = FONT_BODY
+    label.Font = Enum.Font.GothamMedium
     label.Text = text
     label.TextWrapped = false
     label.TextTruncate = Enum.TextTruncate.AtEnd
@@ -774,7 +774,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local switchBg = Instance.new("Frame")
     switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.on or C.off
-    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.24, -(TOGGLE_SH / 2))
+    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.5, -(TOGGLE_SH / 2))
     switchBg.Size = UDim2.new(0, TOGGLE_W, 0, TOGGLE_SH)
     switchBg.ZIndex = 3; addCorner(switchBg, TOGGLE_CR)
 
@@ -790,6 +790,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     badge.Parent = card; badge.BackgroundTransparency = 1
     badge.Position = UDim2.new(1, -(TOGGLE_W + 12), 1, -15)
     badge.Size = UDim2.new(0, TOGGLE_W, 0, 12)
+    badge.Visible = false
     badge.Font = FONT_HEAD
     badge.Text = default and "ON" or "OFF"
     badge.TextColor3 = default and C.on or C.subtext
