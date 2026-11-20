@@ -293,12 +293,12 @@ end)
 -- ========================
 -- GUI SETUP
 -- ========================
-if CoreGui:FindFirstChild("CUKY_PUQY_GUI") then
-    CoreGui:FindFirstChild("CUKY_PUQY_GUI"):Destroy()
+if CoreGui:FindFirstChild("CUKY_PUQY_GUI_V3") then
+    CoreGui:FindFirstChild("CUKY_PUQY_GUI_V3"):Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name           = "CUKY_PUQY_GUI"
+ScreenGui.Name           = "CUKY_PUQY_GUI_V3"
 ScreenGui.Parent         = CoreGui
 ScreenGui.ResetOnSpawn   = false
 ScreenGui.DisplayOrder   = 999
@@ -307,7 +307,7 @@ ScreenGui.IgnoreGuiInset = true
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
 local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
-local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
+local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
     local requestFn = request or http_request or (syn and syn.request)
@@ -375,7 +375,7 @@ end
 local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(390, 800)
 local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 520
 local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
-local SIDE_W  = isMobile and 112 or 136
+local SIDE_W  = isMobile and 116 or 140
 
 local TOGGLE_H  = isMobile and 76 or 64
 local TOGGLE_W  = isMobile and 62 or 68
@@ -436,7 +436,7 @@ MenuLogo.Size = UDim2.new(0, 48, 0, 48)
 MenuLogo.ScaleType = Enum.ScaleType.Crop
 MenuLogo.ZIndex = 3
 addCorner(MenuLogo, 24)
-local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu_v2")
+local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu_github_ui_v3")
 if menuAsset then
     MenuLogo.Image = menuAsset
 end
@@ -560,7 +560,7 @@ MinimizedLogo.Size = UDim2.new(1, -8, 1, -8)
 MinimizedLogo.Position = UDim2.new(0, 4, 0, 4)
 MinimizedLogo.ScaleType = Enum.ScaleType.Crop
 MinimizedLogo.ZIndex = 21
-local minimizedAsset = resolveCustomImage(MINIMIZED_LOGO_URL, "minimized")
+local minimizedAsset = resolveCustomImage(MINIMIZED_LOGO_URL, "minimized_github_ui_v3")
 if minimizedAsset then
     MinimizedLogo.Image = minimizedAsset
     CircleBtn.Text = ""
