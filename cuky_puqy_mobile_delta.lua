@@ -368,18 +368,18 @@ local function addGradient(parent, c0, c1, rotation)
 end
 
 local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(390, 800)
-local FRAME_W = isMobile and math.min(360, math.max(280, viewport.X - 16)) or 400
-local FRAME_H = isMobile and math.min(560, math.max(400, viewport.Y - 16)) or 500
-local SIDE_W  = isMobile and 112 or 120
+local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 520
+local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
+local SIDE_W  = isMobile and 104 or 128
 
-local TOGGLE_H  = isMobile and 72 or 42
-local TOGGLE_W  = isMobile and 68 or 44
-local TOGGLE_SH = isMobile and 38 or 26
-local TOGGLE_CR = isMobile and 19 or 13
-local CIRCLE_SZ = isMobile and 30 or 18
-local CIRCLE_CR = isMobile and 15 or 9
-local ICON_SZ   = isMobile and 21 or 14
-local LABEL_SZ  = isMobile and 14 or 13
+local TOGGLE_H  = isMobile and 76 or 64
+local TOGGLE_W  = isMobile and 72 or 78
+local TOGGLE_SH = isMobile and 36 or 34
+local TOGGLE_CR = isMobile and 18 or 17
+local CIRCLE_SZ = isMobile and 28 or 26
+local CIRCLE_CR = isMobile and 14 or 13
+local ICON_SZ   = isMobile and 18 or 16
+local LABEL_SZ  = isMobile and 13 or 13
 
 -- ========================
 -- MAIN FRAME
@@ -389,14 +389,14 @@ MainFrame.Name              = "MainFrame"
 MainFrame.Parent            = ScreenGui
 MainFrame.BackgroundColor3  = C.bg
 MainFrame.BorderSizePixel   = 0
-MainFrame.Position          = isMobile and UDim2.new(0.5, -FRAME_W/2, 0, 8) or UDim2.new(0, 10, 0, 10)
+MainFrame.Position          = UDim2.new(0.5, -FRAME_W/2, 0.5, -FRAME_H/2)
 MainFrame.Size              = UDim2.new(0, FRAME_W, 0, FRAME_H)
 MainFrame.Active            = true
 MainFrame.Draggable         = not isMobile
 MainFrame.ClipsDescendants  = true
 addCorner(MainFrame, 12)
 addStroke(MainFrame, C.border, 1.5)
-addGradient(MainFrame, Color3.fromRGB(24, 24, 24), Color3.fromRGB(5, 5, 5), 135)
+addGradient(MainFrame, Color3.fromRGB(18, 18, 18), Color3.fromRGB(5, 5, 5), 90)
 
 -- ========================
 -- SIDEBAR
@@ -412,8 +412,8 @@ addStroke(Sidebar, C.border, 1)
 local Logo = Instance.new("TextLabel")
 Logo.Parent                 = Sidebar
 Logo.BackgroundTransparency = 1
-Logo.Position               = UDim2.new(0, 0, 0, 15)
-Logo.Size                   = UDim2.new(1, 0, 0, 30)
+Logo.Position               = UDim2.new(0, 4, 0, 58)
+Logo.Size                   = UDim2.new(1, -8, 0, 22)
 Logo.Font                   = Enum.Font.GothamBlack
 Logo.Text                   = "CUKY PUQY"
 Logo.TextColor3             = C.accent
@@ -423,21 +423,39 @@ local MenuLogo = Instance.new("ImageLabel")
 MenuLogo.Name = "MenuLogo"
 MenuLogo.Parent = Sidebar
 MenuLogo.BackgroundTransparency = 1
-MenuLogo.Position = UDim2.new(0, 8, 0, 10)
-MenuLogo.Size = UDim2.new(0, 30, 0, 30)
+MenuLogo.Position = UDim2.new(0.5, -24, 0, 8)
+MenuLogo.Size = UDim2.new(0, 48, 0, 48)
 MenuLogo.ScaleType = Enum.ScaleType.Crop
 local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu")
 if menuAsset then
     MenuLogo.Image = menuAsset
     Logo.Text = ""
-    addCorner(MenuLogo, 15)
+    addCorner(MenuLogo, 24)
 end
 
 local TabContainer = Instance.new("Frame")
 TabContainer.Parent                 = Sidebar
 TabContainer.BackgroundTransparency = 1
-TabContainer.Position               = UDim2.new(0, 6, 0, 58)
-TabContainer.Size                   = UDim2.new(1, -12, 1, -70)
+local SearchBox = Instance.new("TextBox")
+SearchBox.Name = "SearchFeature"
+SearchBox.Parent = Sidebar
+SearchBox.BackgroundColor3 = C.card
+SearchBox.BorderSizePixel = 0
+SearchBox.Position = UDim2.new(0, 8, 0, 88)
+SearchBox.Size = UDim2.new(1, -16, 0, 25)
+SearchBox.Font = Enum.Font.Gotham
+SearchBox.Text = ""
+SearchBox.PlaceholderText = "Search feature..."
+SearchBox.PlaceholderColor3 = C.subtext
+SearchBox.TextColor3 = C.white
+SearchBox.TextSize = 9
+SearchBox.ClearTextOnFocus = false
+SearchBox.ZIndex = 4
+addCorner(SearchBox, 5)
+addStroke(SearchBox, C.border, 1)
+
+TabContainer.Position               = UDim2.new(0, 7, 0, 122)
+TabContainer.Size                   = UDim2.new(1, -14, 1, -130)
 local TabListLayout = Instance.new("UIListLayout")
 TabListLayout.Parent  = TabContainer
 TabListLayout.Padding = UDim.new(0, 7)
@@ -449,8 +467,26 @@ local ContentArea = Instance.new("Frame")
 ContentArea.Name                   = "ContentArea"
 ContentArea.Parent                 = MainFrame
 ContentArea.BackgroundTransparency = 1
-ContentArea.Position               = UDim2.new(0, SIDE_W, 0, 0)
-ContentArea.Size                   = UDim2.new(1, -SIDE_W, 1, 0)
+ContentArea.Position               = UDim2.new(0, SIDE_W, 0, 34)
+ContentArea.Size                   = UDim2.new(1, -SIDE_W, 1, -34)
+
+local WindowTitle = Instance.new("TextLabel")
+WindowTitle.Name = "WindowTitle"
+WindowTitle.Parent = MainFrame
+WindowTitle.BackgroundTransparency = 1
+WindowTitle.Position = UDim2.new(0, SIDE_W + 12, 0, 5)
+WindowTitle.Size = UDim2.new(1, -(SIDE_W + 66), 0, 22)
+WindowTitle.Font = Enum.Font.GothamBold
+WindowTitle.Text = "CUKY PUQY"
+WindowTitle.TextColor3 = C.white
+WindowTitle.TextSize = isMobile and 13 or 14
+WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
+local WindowLine = Instance.new("Frame")
+WindowLine.Parent = MainFrame
+WindowLine.BackgroundColor3 = C.border
+WindowLine.BorderSizePixel = 0
+WindowLine.Position = UDim2.new(0, SIDE_W + 12, 0, 31)
+WindowLine.Size = UDim2.new(1, -(SIDE_W + 24), 0, 1)
 
 -- ========================
 -- doMinimize
@@ -552,15 +588,15 @@ local MinBtn = Instance.new("TextButton")
 MinBtn.Name             = "MinBtn"
 MinBtn.Parent           = MainFrame
 MinBtn.BackgroundColor3 = C.bg
-MinBtn.Position         = UDim2.new(1, isMobile and -52 or -44, 0, 6)
-MinBtn.Size             = UDim2.new(0, isMobile and 44 or 36, 0, isMobile and 44 or 36)
+MinBtn.Position         = UDim2.new(1, isMobile and -46 or -42, 0, 4)
+MinBtn.Size             = UDim2.new(0, isMobile and 40 or 36, 0, isMobile and 40 or 36)
 MinBtn.Font             = Enum.Font.GothamBlack
 MinBtn.Text             = "−"
 MinBtn.TextColor3       = C.white
 MinBtn.TextSize         = 22
 MinBtn.ZIndex           = 15
 MinBtn.AutoButtonColor  = false
-addCorner(MinBtn, isMobile and 22 or 18)
+addCorner(MinBtn, isMobile and 20 or 18)
 addStroke(MinBtn, C.white, 1.5)
 MinBtn.Activated:Connect(doMinimize)
 
@@ -630,11 +666,12 @@ for _, t in pairs(tabs) do
     local btn = Instance.new("TextButton")
     btn.Parent           = TabContainer
     btn.BackgroundColor3 = C.card
-    btn.Size             = UDim2.new(1, 0, 0, isMobile and 56 or 36)
+    btn.Size             = UDim2.new(1, 0, 0, isMobile and 42 or 38)
     btn.Font             = Enum.Font.GothamBold
     btn.Text             = t.name
     btn.TextColor3       = C.subtext
-    btn.TextSize         = isMobile and 11 or 11
+    btn.TextSize         = isMobile and 10 or 11
+    btn.TextStrokeTransparency = 0.65
     btn.AutoButtonColor  = false
     addCorner(btn, 8); addStroke(btn, C.border, 1)
     local function onTab()
@@ -647,6 +684,10 @@ for _, t in pairs(tabs) do
         btn.TextColor3 = C.white; btn.BackgroundColor3 = C.accentDim
     end
     btn.Activated:Connect(onTab)
+    if t.name == "SURVIVOR" then
+        btn.TextColor3 = C.white
+        btn.BackgroundColor3 = C.accentDim
+    end
 end
 
 -- ========================
@@ -658,7 +699,7 @@ local function createCard(parent, yOffset, height)
     card.BorderSizePixel = 0
     card.Position = UDim2.new(0, 0, 0, yOffset)
     card.Size = UDim2.new(1, 0, 0, height)
-    addCorner(card, 8); addStroke(card, C.border, 1)
+    addCorner(card, isMobile and 14 or 12); addStroke(card, C.border, 1.2)
     return card
 end
 
@@ -671,20 +712,20 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local iconLbl = Instance.new("TextLabel")
     iconLbl.Parent = card; iconLbl.BackgroundTransparency = 1
-    iconLbl.Position = UDim2.new(0, 8, 0, 0); iconLbl.Size = UDim2.new(0, 24, 1, 0)
+    iconLbl.Position = UDim2.new(0, 14, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
     iconLbl.Font = Enum.Font.GothamBold; iconLbl.Text = icon
     iconLbl.TextColor3 = C.accentDim; iconLbl.TextSize = ICON_SZ
 
     local label = Instance.new("TextLabel")
     label.Parent = card; label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 38, 0, 0); label.Size = UDim2.new(0.50, 0, 1, 0)
-    label.Font = Enum.Font.Gotham; label.Text = text
+    label.Position = UDim2.new(0, 50, 0, 0); label.Size = UDim2.new(0.58, 0, 1, 0)
+    label.Font = Enum.Font.Gotham; label.Text = text; label.TextWrapped = false; label.TextTruncate = Enum.TextTruncate.AtEnd
     label.TextColor3 = C.text; label.TextSize = LABEL_SZ
     label.TextXAlignment = Enum.TextXAlignment.Left
 
     local switchBg = Instance.new("Frame")
     switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.accent or C.off
-    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 10), 0.5, -(TOGGLE_SH / 2))
+    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.28, -(TOGGLE_SH / 2))
     switchBg.Size = UDim2.new(0, TOGGLE_W, 0, TOGGLE_SH)
     switchBg.ZIndex = 3; addCorner(switchBg, TOGGLE_CR)
 
@@ -703,7 +744,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     badge.Font = Enum.Font.GothamBold
     badge.Text = default and "ON" or "OFF"
     badge.TextColor3 = default and C.accent or C.subtext
-    badge.TextSize = isMobile and 10 or 9; badge.ZIndex = 4
+    badge.TextSize = isMobile and 11 or 10; badge.ZIndex = 4
 
     local state = default
     local function toggle()
@@ -761,7 +802,7 @@ local function createSection(parent, text, yOffset)
     lbl.Parent = parent; lbl.BackgroundTransparency = 1
     lbl.Position = UDim2.new(0, 4, 0, yOffset); lbl.Size = UDim2.new(1, -8, 0, 22)
     lbl.Font = Enum.Font.GothamBold; lbl.Text = text
-    lbl.TextColor3 = C.accent; lbl.TextSize = 11
+    lbl.TextColor3 = C.white; lbl.TextSize = isMobile and 12 or 13
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     local line = Instance.new("Frame")
     line.Parent = lbl; line.BackgroundColor3 = C.accent
@@ -1370,4 +1411,4 @@ RefreshObjectESP()
 -- scan trap awal kalau espPlayer sudah aktif dari config
 if espPlayer then scanTraps() end
 InitializeAutobuy()
-showTab("LAINNYA")
+showTab("SURVIVOR")
