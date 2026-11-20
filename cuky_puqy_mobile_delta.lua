@@ -634,8 +634,11 @@ local function createTabFrame(name)
     f.AutomaticCanvasSize     = Enum.AutomaticSize.Y
     f.ScrollingEnabled       = true
     local pad = Instance.new("UIPadding")
-    pad.Parent = f; pad.PaddingLeft = UDim.new(0, 10)
-    pad.PaddingRight = UDim.new(0, 10); pad.PaddingTop = UDim.new(0, 10)
+    pad.Parent = f
+    pad.PaddingLeft = UDim.new(0, 12)
+    pad.PaddingRight = UDim.new(0, 12)
+    pad.PaddingTop = UDim.new(0, 12)
+    pad.PaddingBottom = UDim.new(0, 14)
     return f
 end
 
@@ -707,15 +710,25 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     local iconLbl = Instance.new("TextLabel")
     iconLbl.Parent = card; iconLbl.BackgroundTransparency = 1
     iconLbl.Position = UDim2.new(0, 14, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
-    iconLbl.Font = FONT_HEAD; iconLbl.Text = icon
-    iconLbl.TextColor3 = C.accentDim; iconLbl.TextSize = ICON_SZ
+    iconLbl.Font = FONT_HEAD
+    iconLbl.Text = icon
+    iconLbl.TextColor3 = C.subtext
+    iconLbl.TextSize = ICON_SZ
+    iconLbl.TextXAlignment = Enum.TextXAlignment.Center
+    iconLbl.TextYAlignment = Enum.TextYAlignment.Center
 
     local label = Instance.new("TextLabel")
     label.Parent = card; label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 50, 0, 0); label.Size = UDim2.new(0.58, 0, 1, 0)
-    label.Font = FONT_BODY; label.Text = text; label.TextWrapped = false; label.TextTruncate = Enum.TextTruncate.AtEnd
-    label.TextColor3 = C.text; label.TextSize = LABEL_SZ
+    label.Position = UDim2.new(0, 50, 0, 0)
+    label.Size = UDim2.new(1, -(TOGGLE_W + 78), 1, 0)
+    label.Font = FONT_BODY
+    label.Text = text
+    label.TextWrapped = false
+    label.TextTruncate = Enum.TextTruncate.AtEnd
+    label.TextColor3 = C.text
+    label.TextSize = LABEL_SZ
     label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
 
     local switchBg = Instance.new("Frame")
     switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.on or C.off
@@ -738,7 +751,10 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     badge.Font = FONT_HEAD
     badge.Text = default and "ON" or "OFF"
     badge.TextColor3 = default and C.on or C.subtext
-    badge.TextSize = isMobile and 11 or 10; badge.ZIndex = 4
+    badge.TextSize = isMobile and 11 or 10
+    badge.TextXAlignment = Enum.TextXAlignment.Center
+    badge.TextYAlignment = Enum.TextYAlignment.Center
+    badge.ZIndex = 4
 
     local state = default
     local function toggle()
@@ -798,6 +814,7 @@ local function createSection(parent, text, yOffset)
     lbl.Font = FONT_HEAD; lbl.Text = text
     lbl.TextColor3 = C.white; lbl.TextSize = isMobile and 12 or 13
     lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.TextYAlignment = Enum.TextYAlignment.Center
     local line = Instance.new("Frame")
     line.Parent = lbl; line.BackgroundColor3 = C.accent
     line.Size = UDim2.new(1, 0, 0, 1); line.Position = UDim2.new(0, 0, 1, -2)
@@ -881,7 +898,7 @@ end)
 -- VISUAL TAB — ESP per kategori
 -- ========================
 local TH = TOGGLE_H
-local GAP = TH + 8
+local GAP = TH + 12
 
 createSection(ESPFrame, "ESP PLAYER", 5)
 
