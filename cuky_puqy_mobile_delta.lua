@@ -333,9 +333,9 @@ local C = {
     bg        = Color3.fromRGB(8,   9,   12),
     panel     = Color3.fromRGB(14,  16,  20),
     card      = Color3.fromRGB(23,  26,  32),
-    border    = Color3.fromRGB(68,  75,  88),
-    accent    = Color3.fromRGB(145, 160, 181),
-    accentDim = Color3.fromRGB(39,  47,  60),
+    border    = Color3.fromRGB(58,  68,  78),
+    accent    = Color3.fromRGB(112, 184, 172),
+    accentDim = Color3.fromRGB(31,  51,  54),
     red       = Color3.fromRGB(205, 112, 120),
     green     = Color3.fromRGB(143, 190, 154),
     text      = Color3.fromRGB(232, 235, 240),
@@ -343,11 +343,11 @@ local C = {
     off       = Color3.fromRGB(48,  53,  63),
     white     = Color3.fromRGB(235, 238, 243),
     orange    = Color3.fromRGB(198, 157, 105),
-    on        = Color3.fromRGB(62,  145, 103),
+    on        = Color3.fromRGB(58,  145, 118),
 }
 
-local FONT_BRAND = Enum.Font.Antique
-local FONT_HEAD  = Enum.Font.Antique
+local FONT_BRAND = Enum.Font.GothamBold
+local FONT_HEAD  = Enum.Font.GothamMedium
 local FONT_BODY  = Enum.Font.Gotham
 
 local function addStroke(parent, color, thickness)
@@ -378,14 +378,14 @@ local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 52
 local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
 local SIDE_W  = isMobile and 112 or 136
 
-local TOGGLE_H  = isMobile and 76 or 64
-local TOGGLE_W  = isMobile and 62 or 68
-local TOGGLE_SH = isMobile and 29 or 30
-local TOGGLE_CR = isMobile and 15 or 15
-local CIRCLE_SZ = isMobile and 21 or 22
-local CIRCLE_CR = isMobile and 11 or 11
-local ICON_SZ   = isMobile and 18 or 16
-local LABEL_SZ  = isMobile and 13 or 13
+local TOGGLE_H  = isMobile and 62 or 54
+local TOGGLE_W  = isMobile and 52 or 56
+local TOGGLE_SH = isMobile and 24 or 24
+local TOGGLE_CR = 12
+local CIRCLE_SZ = isMobile and 18 or 18
+local CIRCLE_CR = 9
+local ICON_SZ   = isMobile and 16 or 15
+local LABEL_SZ  = isMobile and 12 or 12
 
 -- ========================
 -- MAIN FRAME
@@ -735,9 +735,9 @@ local function createCard(parent, yOffset, height)
     card.BorderSizePixel = 0
     card.Position = UDim2.new(0, 0, 0, yOffset)
     card.Size = UDim2.new(1, 0, 0, height)
-    addCorner(card, isMobile and 16 or 14)
+    addCorner(card, isMobile and 13 or 12)
     local cardStroke = addStroke(card, C.border, 1)
-    cardStroke.Transparency = 0.28
+    cardStroke.Transparency = 0.22
     addGradient(card, Color3.fromRGB(29, 33, 40), Color3.fromRGB(18, 20, 25), 90)
     return card
 end
@@ -751,7 +751,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local iconLbl = Instance.new("TextLabel")
     iconLbl.Parent = card; iconLbl.BackgroundTransparency = 1
-    iconLbl.Position = UDim2.new(0, 14, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
+    iconLbl.Position = UDim2.new(0, 10, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
     iconLbl.Font = FONT_HEAD
     iconLbl.Text = icon
     iconLbl.TextColor3 = C.subtext
@@ -761,8 +761,8 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local label = Instance.new("TextLabel")
     label.Parent = card; label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 50, 0, 0)
-    label.Size = UDim2.new(1, -(TOGGLE_W + 78), 1, 0)
+    label.Position = UDim2.new(0, 44, 0, 0)
+    label.Size = UDim2.new(1, -(TOGGLE_W + 66), 1, 0)
     label.Font = FONT_BODY
     label.Text = text
     label.TextWrapped = false
@@ -774,7 +774,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local switchBg = Instance.new("Frame")
     switchBg.Parent = card; switchBg.BackgroundColor3 = default and C.on or C.off
-    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.28, -(TOGGLE_SH / 2))
+    switchBg.Position = UDim2.new(1, -(TOGGLE_W + 12), 0.24, -(TOGGLE_SH / 2))
     switchBg.Size = UDim2.new(0, TOGGLE_W, 0, TOGGLE_SH)
     switchBg.ZIndex = 3; addCorner(switchBg, TOGGLE_CR)
 
@@ -788,12 +788,12 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
 
     local badge = Instance.new("TextLabel")
     badge.Parent = card; badge.BackgroundTransparency = 1
-    badge.Position = UDim2.new(1, -(TOGGLE_W + 12), 1, -16)
-    badge.Size = UDim2.new(0, TOGGLE_W, 0, 14)
+    badge.Position = UDim2.new(1, -(TOGGLE_W + 12), 1, -15)
+    badge.Size = UDim2.new(0, TOGGLE_W, 0, 12)
     badge.Font = FONT_HEAD
     badge.Text = default and "ON" or "OFF"
     badge.TextColor3 = default and C.on or C.subtext
-    badge.TextSize = isMobile and 11 or 10
+    badge.TextSize = isMobile and 10 or 9
     badge.TextXAlignment = Enum.TextXAlignment.Center
     badge.TextYAlignment = Enum.TextYAlignment.Center
     badge.ZIndex = 4
@@ -853,14 +853,14 @@ local function createSection(parent, text, yOffset)
     local lbl = Instance.new("TextLabel")
     lbl.Parent = parent; lbl.BackgroundTransparency = 1
     lbl.Position = UDim2.new(0, 4, 0, yOffset); lbl.Size = UDim2.new(1, -8, 0, 22)
-    lbl.Font = FONT_HEAD; lbl.Text = text
-    lbl.TextColor3 = C.white; lbl.TextSize = isMobile and 12 or 13
+    lbl.Font = Enum.Font.GothamSemibold; lbl.Text = text
+    lbl.TextColor3 = C.accent; lbl.TextSize = isMobile and 11 or 12
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.TextYAlignment = Enum.TextYAlignment.Center
     local line = Instance.new("Frame")
-    line.Parent = lbl; line.BackgroundColor3 = C.border
-    line.Size = UDim2.new(1, 0, 0, 1); line.Position = UDim2.new(0, 0, 1, -2)
-    line.BorderSizePixel = 0; line.BackgroundTransparency = 0.35
+    line.Parent = lbl; line.BackgroundColor3 = C.accent
+    line.Size = UDim2.new(0, 24, 0, 2); line.Position = UDim2.new(0, 0, 1, -1)
+    line.BorderSizePixel = 0; line.BackgroundTransparency = 0.18
 end
 
 -- ========================
