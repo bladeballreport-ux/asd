@@ -131,6 +131,7 @@ local isRightMouseDown = false
 local hideMenuKey      = Enum.KeyCode.RightControl
 local targetFOV        = cfg.targetFOV or 100
 local defaultFOV       = Camera.FieldOfView
+local aimZoomActive    = false
 
 local function saveAll()
     saveConfig({
@@ -173,6 +174,7 @@ local IndicatorGui      = nil
 local ActiveGenerators  = {}
 local LastUpdateTick    = 0
 local LastESPRefresh    = 0
+local LastFullBrightApply = 0
 
 -- Trap ESP state
 local trapHighlights    = {}
@@ -180,7 +182,9 @@ local trapHighlights    = {}
 local function _doUnload()
     ScriptRunning = false
     applyFullBright(false)
-    pcall(function() if Camera then Camera.FieldOfView = defaultFOV end end)
+    pcall(function()
+        if Camera and not aimZoomActive then Camera.FieldOfView = defaultFOV end
+    end)
     if HeartbeatConnection  then HeartbeatConnection:Disconnect();  HeartbeatConnection  = nil end
     if VisibilityConnection then VisibilityConnection:Disconnect(); VisibilityConnection = nil end
     if _RenderConnection    then _RenderConnection:Disconnect();    _RenderConnection    = nil end
@@ -1026,7 +1030,11 @@ local updateESPGateUI   = createToggle(ESPFrame, "E", "Gate",       objBase + GA
 local fovBase = objBase + GAP*5 + 16
 createSection(ESPFrame, "FOV", fovBase)
 local updateFOVUI = createToggle(ESPFrame, "◎", "Pengubah FOV", fovBase + 28, cfg.fovEnabled, function(v)
-    fovEnabled = v; saveAll()
+    fovEnabled = v
+    if not v and not aimZoomActive then
+        pcall(function() Camera.FieldOfView = defaultFOV end)
+    end
+    saveAll()
 end)
 local fovInput = createLabelInput(ESPFrame, "F", "Target FOV:", tostring(cfg.targetFOV or 100), fovBase + 28 + GAP + 8, function(txt)
     targetFOV = tonumber(txt) or 100; saveAll()
@@ -1052,6 +1060,9 @@ end)
 local function doReset()
     espPlayer = false; espPallet = false; espWindow = false
     espHook = false; espGenerator = false; espGate = false
+    if not aimZoomActive then
+        pcall(function() Camera.FieldOfView = defaultFOV end)
+    end
     crosshairEnabled = false; fovEnabled = false; fullBrightEnabled = false
     skillcheckEnabled = false; skillcheckNotPerfectEnabled = false
     targetFOV = 100
@@ -1429,7 +1440,31 @@ end
 -- ========================
 _RenderConnection = RunService.RenderStepped:Connect(function()
     if not ScriptRunning then return end
-    Camera.FieldOfView   = fovEnabled and targetFOV or defaultFOV
+
+    -- Respect temporary camera zooms started by the game (for example, aim).
+    local currentFOV = Camera and Camera.FieldOfView
+    if currentFOV then
+        local normalFOV = fovEnabled and math.min(defaultFOV, targetFOV) or defaultFOV
+        if aimZoomActive then
+            if currentFOV >= normalFOV - 1 then
+                aimZoomActive = false
+            else
+                CrosshairGUI.Visible = crosshairEnabled and not isMobile
+                return
+            end
+        end
+
+        if currentFOV < normalFOV - 2 then
+            aimZoomActive = true
+        elseif fovEnabled then
+            if math.abs(currentFOV - targetFOV) > 0.05 then
+                Camera.FieldOfView = targetFOV
+            end
+        else
+            -- Track the game's normal FOV while the custom changer is off.
+            defaultFOV = currentFOV
+        end
+    end
     CrosshairGUI.Visible = crosshairEnabled and not isMobile
 end)
 
@@ -1442,6 +1477,11 @@ _MainHBConnection = RunService.Heartbeat:Connect(function()
     if now - LastESPRefresh > 5 then
         LastESPRefresh = now
         RefreshObjectESP()
+    end
+    -- Re-apply after map scripts or teleports replace the lighting values.
+    if fullBrightEnabled and now - LastFullBrightApply >= 0.5 then
+        LastFullBrightApply = now
+        applyFullBright(true)
     end
 
     local myChar  = LocalPlayer.Character
