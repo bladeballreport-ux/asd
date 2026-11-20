@@ -293,12 +293,12 @@ end)
 -- ========================
 -- GUI SETUP
 -- ========================
-if CoreGui:FindFirstChild("CUKY_PUQY_GUI_V3") then
-    CoreGui:FindFirstChild("CUKY_PUQY_GUI_V3"):Destroy()
+if CoreGui:FindFirstChild("CUKY_PUQY_GUI") then
+    CoreGui:FindFirstChild("CUKY_PUQY_GUI"):Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name           = "CUKY_PUQY_GUI_V3"
+ScreenGui.Name           = "CUKY_PUQY_GUI"
 ScreenGui.Parent         = CoreGui
 ScreenGui.ResetOnSpawn   = false
 ScreenGui.DisplayOrder   = 999
@@ -307,7 +307,7 @@ ScreenGui.IgnoreGuiInset = true
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
 local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
-local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
+local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
     local requestFn = request or http_request or (syn and syn.request)
@@ -329,20 +329,21 @@ local function resolveCustomImage(url, filename)
 end
 
 local C = {
-    bg        = Color3.fromRGB(5,   5,   5),
-    panel     = Color3.fromRGB(12,  12,  12),
-    card      = Color3.fromRGB(20,  20,  20),
-    border    = Color3.fromRGB(245, 245, 245),
-    accent    = Color3.fromRGB(255, 255, 255),
-    accentDim = Color3.fromRGB(58,  58,  58),
-    red       = Color3.fromRGB(235, 235, 235),
-    green     = Color3.fromRGB(255, 255, 255),
-    text      = Color3.fromRGB(255, 255, 255),
-    subtext   = Color3.fromRGB(160, 160, 160),
-    off       = Color3.fromRGB(42,  42,  42),
-    white     = Color3.fromRGB(255, 255, 255),
-    orange    = Color3.fromRGB(220, 220, 220),
-    on        = Color3.fromRGB(48, 205, 112),
+    -- Palet charcoal dengan aksen abu-biru yang lebih redup.
+    bg        = Color3.fromRGB(8,   9,   12),
+    panel     = Color3.fromRGB(14,  16,  20),
+    card      = Color3.fromRGB(23,  26,  32),
+    border    = Color3.fromRGB(68,  75,  88),
+    accent    = Color3.fromRGB(145, 160, 181),
+    accentDim = Color3.fromRGB(39,  47,  60),
+    red       = Color3.fromRGB(205, 112, 120),
+    green     = Color3.fromRGB(143, 190, 154),
+    text      = Color3.fromRGB(232, 235, 240),
+    subtext   = Color3.fromRGB(145, 152, 164),
+    off       = Color3.fromRGB(48,  53,  63),
+    white     = Color3.fromRGB(235, 238, 243),
+    orange    = Color3.fromRGB(198, 157, 105),
+    on        = Color3.fromRGB(62,  145, 103),
 }
 
 local FONT_BRAND = Enum.Font.Antique
@@ -375,7 +376,7 @@ end
 local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(390, 800)
 local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 520
 local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
-local SIDE_W  = isMobile and 116 or 140
+local SIDE_W  = isMobile and 112 or 136
 
 local TOGGLE_H  = isMobile and 76 or 64
 local TOGGLE_W  = isMobile and 62 or 68
@@ -400,8 +401,9 @@ MainFrame.Active            = true
 MainFrame.Draggable         = not isMobile
 MainFrame.ClipsDescendants  = true
 addCorner(MainFrame, 12)
-addStroke(MainFrame, C.border, 1.5)
-addGradient(MainFrame, Color3.fromRGB(18, 18, 18), Color3.fromRGB(5, 5, 5), 90)
+local mainStroke = addStroke(MainFrame, C.border, 1.25)
+mainStroke.Transparency = 0.18
+addGradient(MainFrame, Color3.fromRGB(20, 23, 29), Color3.fromRGB(8, 9, 12), 90)
 
 -- ========================
 -- SIDEBAR
@@ -412,7 +414,8 @@ Sidebar.Parent           = MainFrame
 Sidebar.BackgroundColor3 = C.panel
 Sidebar.BorderSizePixel  = 0
 Sidebar.Size             = UDim2.new(0, SIDE_W, 1, 0)
-addStroke(Sidebar, C.border, 1)
+local sidebarStroke = addStroke(Sidebar, C.border, 1)
+sidebarStroke.Transparency = 0.35
 
 local Logo = Instance.new("TextLabel")
 Logo.Parent                 = Sidebar
@@ -436,7 +439,7 @@ MenuLogo.Size = UDim2.new(0, 48, 0, 48)
 MenuLogo.ScaleType = Enum.ScaleType.Crop
 MenuLogo.ZIndex = 3
 addCorner(MenuLogo, 24)
-local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu_github_ui_v3")
+local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu_v2")
 if menuAsset then
     MenuLogo.Image = menuAsset
 end
@@ -460,7 +463,7 @@ SearchBox.TextSize = 9
 SearchBox.ClearTextOnFocus = false
 SearchBox.ZIndex = 4
 addCorner(SearchBox, 5)
-local searchStroke = addStroke(SearchBox, C.border, 1); searchStroke.Transparency = 0.25
+local searchStroke = addStroke(SearchBox, C.border, 1); searchStroke.Transparency = 0.45
 
 local SidebarDivider = Instance.new("Frame")
 SidebarDivider.Name = "SidebarDivider"
@@ -560,7 +563,7 @@ MinimizedLogo.Size = UDim2.new(1, -8, 1, -8)
 MinimizedLogo.Position = UDim2.new(0, 4, 0, 4)
 MinimizedLogo.ScaleType = Enum.ScaleType.Crop
 MinimizedLogo.ZIndex = 21
-local minimizedAsset = resolveCustomImage(MINIMIZED_LOGO_URL, "minimized_github_ui_v3")
+local minimizedAsset = resolveCustomImage(MINIMIZED_LOGO_URL, "minimized")
 if minimizedAsset then
     MinimizedLogo.Image = minimizedAsset
     CircleBtn.Text = ""
@@ -687,26 +690,39 @@ for _, t in pairs(tabs) do
     btn.Parent           = TabContainer
     btn.BackgroundColor3 = C.card
     btn.Size             = UDim2.new(1, 0, 0, isMobile and 44 or 40)
-    btn.Font             = FONT_HEAD
+    btn.Font             = Enum.Font.GothamMedium
     btn.Text             = t.name
     btn.TextColor3       = C.subtext
     btn.TextSize         = isMobile and 10 or 11
-    btn.TextStrokeTransparency = 0.65
+    btn.TextStrokeTransparency = 1
     btn.AutoButtonColor  = false
-    addCorner(btn, 9); local tabStroke = addStroke(btn, C.white, 1.25); tabStroke.Transparency = 0.12
+    addCorner(btn, 9)
+    local tabStroke = addStroke(btn, C.border, 1)
+    tabStroke.Transparency = 0.42
     local function onTab()
         showTab(t.name)
         for _, other in pairs(TabContainer:GetChildren()) do
             if other:IsA("TextButton") then
-                other.TextColor3 = C.subtext; other.BackgroundColor3 = C.card
+                other.TextColor3 = C.subtext
+                other.BackgroundColor3 = C.card
+                local otherStroke = other:FindFirstChildOfClass("UIStroke")
+                if otherStroke then
+                    otherStroke.Color = C.border
+                    otherStroke.Transparency = 0.42
+                end
             end
         end
-        btn.TextColor3 = C.white; btn.BackgroundColor3 = C.accentDim
+        btn.TextColor3 = C.white
+        btn.BackgroundColor3 = C.accentDim
+        tabStroke.Color = C.accent
+        tabStroke.Transparency = 0.12
     end
     btn.Activated:Connect(onTab)
     if t.name == "SURVIVOR" then
         btn.TextColor3 = C.white
         btn.BackgroundColor3 = C.accentDim
+        tabStroke.Color = C.accent
+        tabStroke.Transparency = 0.12
     end
 end
 
@@ -720,9 +736,9 @@ local function createCard(parent, yOffset, height)
     card.Position = UDim2.new(0, 0, 0, yOffset)
     card.Size = UDim2.new(1, 0, 0, height)
     addCorner(card, isMobile and 16 or 14)
-    local cardStroke = addStroke(card, C.white, isMobile and 1.5 or 1.7)
-    cardStroke.Transparency = 0
-    addGradient(card, Color3.fromRGB(34, 34, 34), Color3.fromRGB(10, 10, 10), 90)
+    local cardStroke = addStroke(card, C.border, 1)
+    cardStroke.Transparency = 0.28
+    addGradient(card, Color3.fromRGB(29, 33, 40), Color3.fromRGB(18, 20, 25), 90)
     return card
 end
 
@@ -842,9 +858,9 @@ local function createSection(parent, text, yOffset)
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     lbl.TextYAlignment = Enum.TextYAlignment.Center
     local line = Instance.new("Frame")
-    line.Parent = lbl; line.BackgroundColor3 = C.accent
+    line.Parent = lbl; line.BackgroundColor3 = C.border
     line.Size = UDim2.new(1, 0, 0, 1); line.Position = UDim2.new(0, 0, 1, -2)
-    line.BorderSizePixel = 0; line.BackgroundTransparency = 0.6
+    line.BorderSizePixel = 0; line.BackgroundTransparency = 0.35
 end
 
 -- ========================
@@ -852,7 +868,7 @@ end
 -- ========================
 local BannerCard = createCard(OthersFrame, 5, 80)
 BannerCard.BackgroundColor3 = C.panel
-addGradient(BannerCard, Color3.fromRGB(38, 38, 38), Color3.fromRGB(12, 12, 12), 135)
+addGradient(BannerCard, Color3.fromRGB(34, 39, 48), Color3.fromRGB(16, 18, 23), 135)
 local BannerTitle = Instance.new("TextLabel")
 BannerTitle.Parent = BannerCard; BannerTitle.BackgroundTransparency = 1
 BannerTitle.Position = UDim2.new(0, 14, 0, 8); BannerTitle.Size = UDim2.new(1, -14, 0, 30)
@@ -916,7 +932,7 @@ createSection(SurvivorFrame, "SKILLCHECK", 5)
 local updateSkillcheckUI = createToggle(SurvivorFrame, "✓", "Skillcheck Sempurna", 30, cfg.skillcheckEnabled, function(v)
     skillcheckEnabled = v; saveAll()
 end)
-local updateSkillcheckNotPerfectUI = createToggle(SurvivorFrame, "✗", "Auto Gen (Not Perfect)", 110, cfg.skillcheckNotPerfectEnabled, function(v)
+local updateSkillcheckNotPerfectUI = createToggle(SurvivorFrame, "✗", "Auto Gen (Not Perfect)", 30 + TOGGLE_H + 12, cfg.skillcheckNotPerfectEnabled, function(v)
     skillcheckNotPerfectEnabled = v; saveAll()
 end)
 
