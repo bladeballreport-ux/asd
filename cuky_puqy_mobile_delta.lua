@@ -307,7 +307,7 @@ ScreenGui.IgnoreGuiInset = true
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
 local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
-local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
+local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
     local requestFn = request or http_request or (syn and syn.request)
@@ -332,9 +332,9 @@ local C = {
     bg        = Color3.fromRGB(5,   5,   5),
     panel     = Color3.fromRGB(12,  12,  12),
     card      = Color3.fromRGB(20,  20,  20),
-    border    = Color3.fromRGB(66,  66,  66),
+    border    = Color3.fromRGB(245, 245, 245),
     accent    = Color3.fromRGB(255, 255, 255),
-    accentDim = Color3.fromRGB(52,  52,  52),
+    accentDim = Color3.fromRGB(58,  58,  58),
     red       = Color3.fromRGB(235, 235, 235),
     green     = Color3.fromRGB(255, 255, 255),
     text      = Color3.fromRGB(255, 255, 255),
@@ -344,6 +344,10 @@ local C = {
     orange    = Color3.fromRGB(220, 220, 220),
     on        = Color3.fromRGB(48, 205, 112),
 }
+
+local FONT_BRAND = Enum.Font.Antique
+local FONT_HEAD  = Enum.Font.Antique
+local FONT_BODY  = Enum.Font.Gotham
 
 local function addStroke(parent, color, thickness)
     local s = Instance.new("UIStroke")
@@ -415,7 +419,7 @@ Logo.Parent                 = Sidebar
 Logo.BackgroundTransparency = 1
 Logo.Position               = UDim2.new(0, 4, 0, 58)
 Logo.Size                   = UDim2.new(1, -8, 0, 22)
-Logo.Font                   = Enum.Font.GothamBlack
+Logo.Font                   = FONT_BRAND
 Logo.Text                   = "CUKY PUQY"
 Logo.TextColor3             = C.accent
 Logo.TextSize               = isMobile and 12 or 18
@@ -453,7 +457,7 @@ SearchBox.TextSize = 9
 SearchBox.ClearTextOnFocus = false
 SearchBox.ZIndex = 4
 addCorner(SearchBox, 5)
-addStroke(SearchBox, C.border, 1)
+local searchStroke = addStroke(SearchBox, C.border, 1); searchStroke.Transparency = 0.25
 
 TabContainer.Position               = UDim2.new(0, 7, 0, 122)
 TabContainer.Size                   = UDim2.new(1, -14, 1, -130)
@@ -477,7 +481,7 @@ WindowTitle.Parent = MainFrame
 WindowTitle.BackgroundTransparency = 1
 WindowTitle.Position = UDim2.new(0, SIDE_W + 12, 0, 5)
 WindowTitle.Size = UDim2.new(1, -(SIDE_W + 66), 0, 22)
-WindowTitle.Font = Enum.Font.GothamBold
+WindowTitle.Font = FONT_HEAD
 WindowTitle.Text = "CUKY PUQY"
 WindowTitle.TextColor3 = C.white
 WindowTitle.TextSize = isMobile and 13 or 14
@@ -528,7 +532,7 @@ CircleBtn.Parent           = ScreenGui
 CircleBtn.BackgroundColor3 = C.bg
 CircleBtn.Position         = UDim2.new(0, 12, 0, 12)
 CircleBtn.Size             = UDim2.new(0, isMobile and 60 or 50, 0, isMobile and 60 or 50)
-CircleBtn.Font             = Enum.Font.GothamBlack
+CircleBtn.Font             = FONT_BRAND
 CircleBtn.Text             = "C"
 CircleBtn.TextColor3       = C.white
 CircleBtn.TextSize         = isMobile and 24 or 20
@@ -591,7 +595,7 @@ MinBtn.Parent           = MainFrame
 MinBtn.BackgroundColor3 = C.bg
 MinBtn.Position         = UDim2.new(1, isMobile and -46 or -42, 0, 4)
 MinBtn.Size             = UDim2.new(0, isMobile and 40 or 36, 0, isMobile and 40 or 36)
-MinBtn.Font             = Enum.Font.GothamBlack
+MinBtn.Font             = FONT_BRAND
 MinBtn.Text             = "−"
 MinBtn.TextColor3       = C.white
 MinBtn.TextSize         = 22
@@ -669,13 +673,13 @@ for _, t in pairs(tabs) do
     btn.Parent           = TabContainer
     btn.BackgroundColor3 = C.card
     btn.Size             = UDim2.new(1, 0, 0, isMobile and 42 or 38)
-    btn.Font             = Enum.Font.GothamBold
+    btn.Font             = FONT_HEAD
     btn.Text             = t.name
     btn.TextColor3       = C.subtext
     btn.TextSize         = isMobile and 10 or 11
     btn.TextStrokeTransparency = 0.65
     btn.AutoButtonColor  = false
-    addCorner(btn, 8); addStroke(btn, C.border, 1)
+    addCorner(btn, 9); local tabStroke = addStroke(btn, C.white, 1.25); tabStroke.Transparency = 0.12
     local function onTab()
         showTab(t.name)
         for _, other in pairs(TabContainer:GetChildren()) do
@@ -703,8 +707,9 @@ local function createCard(parent, yOffset, height)
     card.Size = UDim2.new(1, 0, 0, height)
     card.ClipsDescendants = true
     addCorner(card, isMobile and 16 or 14)
-    addStroke(card, C.border, 1.35)
-    addGradient(card, Color3.fromRGB(30, 30, 30), Color3.fromRGB(13, 13, 13), 90)
+    local cardStroke = addStroke(card, C.white, isMobile and 1.5 or 1.7)
+    cardStroke.Transparency = 0
+    addGradient(card, Color3.fromRGB(34, 34, 34), Color3.fromRGB(10, 10, 10), 90)
     return card
 end
 
@@ -718,13 +723,13 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     local iconLbl = Instance.new("TextLabel")
     iconLbl.Parent = card; iconLbl.BackgroundTransparency = 1
     iconLbl.Position = UDim2.new(0, 14, 0, 0); iconLbl.Size = UDim2.new(0, 28, 1, 0)
-    iconLbl.Font = Enum.Font.GothamBold; iconLbl.Text = icon
+    iconLbl.Font = FONT_HEAD; iconLbl.Text = icon
     iconLbl.TextColor3 = C.accentDim; iconLbl.TextSize = ICON_SZ
 
     local label = Instance.new("TextLabel")
     label.Parent = card; label.BackgroundTransparency = 1
     label.Position = UDim2.new(0, 50, 0, 0); label.Size = UDim2.new(0.58, 0, 1, 0)
-    label.Font = Enum.Font.Gotham; label.Text = text; label.TextWrapped = false; label.TextTruncate = Enum.TextTruncate.AtEnd
+    label.Font = FONT_BODY; label.Text = text; label.TextWrapped = false; label.TextTruncate = Enum.TextTruncate.AtEnd
     label.TextColor3 = C.text; label.TextSize = LABEL_SZ
     label.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -746,7 +751,7 @@ local function createToggle(parent, icon, text, yOffset, default, callback)
     badge.Parent = card; badge.BackgroundTransparency = 1
     badge.Position = UDim2.new(1, -(TOGGLE_W + 12), 1, -16)
     badge.Size = UDim2.new(0, TOGGLE_W, 0, 14)
-    badge.Font = Enum.Font.GothamBold
+    badge.Font = FONT_HEAD
     badge.Text = default and "ON" or "OFF"
     badge.TextColor3 = default and C.on or C.subtext
     badge.TextSize = isMobile and 11 or 10; badge.ZIndex = 4
@@ -787,14 +792,14 @@ local function createLabelInput(parent, icon, text, defaultVal, yOffset, callbac
     local label = Instance.new("TextLabel")
     label.Parent = card; label.BackgroundTransparency = 1
     label.Position = UDim2.new(0, 10, 0, 0); label.Size = UDim2.new(0.6, 0, 1, 0)
-    label.Font = Enum.Font.Gotham; label.Text = icon .. " " .. text
+    label.Font = FONT_BODY; label.Text = icon .. " " .. text
     label.TextColor3 = C.text; label.TextSize = isMobile and 12 or 13
     label.TextXAlignment = Enum.TextXAlignment.Left
     local input = Instance.new("TextBox")
     input.Parent = card; input.BackgroundColor3 = C.off
     input.Position = UDim2.new(1, -84, 0.5, -(isMobile and 18 or 13))
     input.Size = UDim2.new(0, isMobile and 70 or 64, 0, isMobile and 36 or 26)
-    input.Font = Enum.Font.GothamBold; input.Text = defaultVal
+    input.Font = FONT_HEAD; input.Text = defaultVal
     input.TextColor3 = C.white; input.TextSize = isMobile and 13 or 11
     input.ClearTextOnFocus = false
     addCorner(input, 6); addStroke(input, C.border, 1)
@@ -806,7 +811,7 @@ local function createSection(parent, text, yOffset)
     local lbl = Instance.new("TextLabel")
     lbl.Parent = parent; lbl.BackgroundTransparency = 1
     lbl.Position = UDim2.new(0, 4, 0, yOffset); lbl.Size = UDim2.new(1, -8, 0, 22)
-    lbl.Font = Enum.Font.GothamBold; lbl.Text = text
+    lbl.Font = FONT_HEAD; lbl.Text = text
     lbl.TextColor3 = C.white; lbl.TextSize = isMobile and 12 or 13
     lbl.TextXAlignment = Enum.TextXAlignment.Left
     local line = Instance.new("Frame")
@@ -824,13 +829,13 @@ addGradient(BannerCard, Color3.fromRGB(38, 38, 38), Color3.fromRGB(12, 12, 12), 
 local BannerTitle = Instance.new("TextLabel")
 BannerTitle.Parent = BannerCard; BannerTitle.BackgroundTransparency = 1
 BannerTitle.Position = UDim2.new(0, 14, 0, 8); BannerTitle.Size = UDim2.new(1, -14, 0, 30)
-BannerTitle.Font = Enum.Font.GothamBlack; BannerTitle.Text = "CUKY PUQY"
+BannerTitle.Font = FONT_BRAND; BannerTitle.Text = "CUKY PUQY"
 BannerTitle.TextColor3 = C.accent; BannerTitle.TextSize = isMobile and 14 or 20
 BannerTitle.TextXAlignment = Enum.TextXAlignment.Left
 local BannerSub = Instance.new("TextLabel")
 BannerSub.Parent = BannerCard; BannerSub.BackgroundTransparency = 1
 BannerSub.Position = UDim2.new(0, 14, 0, 36); BannerSub.Size = UDim2.new(1, -14, 0, 18)
-BannerSub.Font = Enum.Font.Gotham; BannerSub.Text = "MOBILE DELTA UI"
+BannerSub.Font = FONT_BODY; BannerSub.Text = "MOBILE DELTA UI"
 BannerSub.TextColor3 = C.subtext; BannerSub.TextSize = 11
 BannerSub.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -842,13 +847,13 @@ for i, kb in ipairs(keybinds) do
     local kLabel = Instance.new("TextLabel")
     kLabel.Parent = kCard; kLabel.BackgroundTransparency = 1
     kLabel.Position = UDim2.new(0, 10, 0, 0); kLabel.Size = UDim2.new(0.6, 0, 1, 0)
-    kLabel.Font = Enum.Font.Gotham; kLabel.Text = kb.desc
+    kLabel.Font = FONT_BODY; kLabel.Text = kb.desc
     kLabel.TextColor3 = C.text; kLabel.TextSize = 11
     kLabel.TextXAlignment = Enum.TextXAlignment.Left
     local kBadge = Instance.new("TextLabel")
     kBadge.Parent = kCard; kBadge.BackgroundColor3 = C.off
     kBadge.Position = UDim2.new(1, -84, 0.5, -11); kBadge.Size = UDim2.new(0, 74, 0, 22)
-    kBadge.Font = Enum.Font.GothamBold; kBadge.Text = kb.key
+    kBadge.Font = FONT_HEAD; kBadge.Text = kb.key
     kBadge.TextColor3 = C.accent; kBadge.TextSize = 9
     addCorner(kBadge, 4); addStroke(kBadge, C.border, 1)
 end
@@ -858,21 +863,21 @@ local cfgStatusCard = createCard(OthersFrame, 200, 40)
 local cfgStatusLbl = Instance.new("TextLabel")
 cfgStatusLbl.Parent = cfgStatusCard; cfgStatusLbl.BackgroundTransparency = 1
 cfgStatusLbl.Position = UDim2.new(0, 10, 0, 0); cfgStatusLbl.Size = UDim2.new(1, -10, 1, 0)
-cfgStatusLbl.Font = Enum.Font.Gotham; cfgStatusLbl.Text = "CONFIG TERSIMPAN OTOMATIS"
+cfgStatusLbl.Font = FONT_BODY; cfgStatusLbl.Text = "CONFIG TERSIMPAN OTOMATIS"
 cfgStatusLbl.TextColor3 = C.green; cfgStatusLbl.TextSize = 11
 cfgStatusLbl.TextXAlignment = Enum.TextXAlignment.Left
 
 local resetCard = createCard(OthersFrame, 248, 40)
 local resetBtn = Instance.new("TextButton")
 resetBtn.Parent = resetCard; resetBtn.BackgroundTransparency = 1
-resetBtn.Size = UDim2.new(1, 0, 1, 0); resetBtn.Font = Enum.Font.GothamBold
+resetBtn.Size = UDim2.new(1, 0, 1, 0); resetBtn.Font = FONT_HEAD
 resetBtn.Text = "RESET CONFIG"; resetBtn.TextColor3 = C.red
 resetBtn.TextSize = 11; resetBtn.AutoButtonColor = false
 
 local unloadCard = createCard(OthersFrame, 296, 40)
 local unloadBtn  = Instance.new("TextButton")
 unloadBtn.Parent = unloadCard; unloadBtn.BackgroundTransparency = 1
-unloadBtn.Size = UDim2.new(1, 0, 1, 0); unloadBtn.Font = Enum.Font.GothamBold
+unloadBtn.Size = UDim2.new(1, 0, 1, 0); unloadBtn.Font = FONT_HEAD
 unloadBtn.Text = "UNLOAD SCRIPT"; unloadBtn.TextColor3 = C.red
 unloadBtn.TextSize = 11; unloadBtn.AutoButtonColor = false
 unloadBtn.Activated:Connect(_doUnload)
@@ -1036,7 +1041,7 @@ local function CreateBillboardTag(text, color, size, textSize)
     lbl.Name = "BitchHook"; lbl.Size = UDim2.new(1, 0, 1, 0)
     lbl.BackgroundTransparency = 1; lbl.Text = text; lbl.TextColor3 = color
     lbl.TextStrokeTransparency = 0; lbl.TextStrokeColor3 = Color3.new(0,0,0)
-    lbl.Font = Enum.Font.GothamBold; lbl.TextSize = textSize or 10
+    lbl.Font = FONT_HEAD; lbl.TextSize = textSize or 10
     lbl.TextWrapped = true; lbl.RichText = true; lbl.Parent = bb
     return bb
 end
@@ -1198,7 +1203,7 @@ local function updatePlayerESP(player)
             chasedLabel2D = Instance.new("TextLabel", IndicatorGui)
             chasedLabel2D.Name = player.Name .. "_Chased"
             chasedLabel2D.BackgroundTransparency = 1
-            chasedLabel2D.Font = Enum.Font.GothamBold; chasedLabel2D.TextSize = 24
+            chasedLabel2D.Font = FONT_HEAD; chasedLabel2D.TextSize = 24
             chasedLabel2D.TextStrokeTransparency = 0; chasedLabel2D.AnchorPoint = Vector2.new(0.5, 0.5)
         end
         chasedLabel2D.Text = "!!"; chasedLabel2D.TextColor3 = color
@@ -1223,7 +1228,7 @@ local function updatePlayerESP(player)
             killerLabel2D = Instance.new("TextLabel", IndicatorGui)
             killerLabel2D.Name = player.Name .. "_Killer"
             killerLabel2D.BackgroundTransparency = 1
-            killerLabel2D.Font = Enum.Font.GothamBold; killerLabel2D.TextSize = 20
+            killerLabel2D.Font = FONT_HEAD; killerLabel2D.TextSize = 20
             killerLabel2D.TextStrokeTransparency = 0; killerLabel2D.Size = UDim2.new(0, 40, 0, 40)
             killerLabel2D.AnchorPoint = Vector2.new(0.5, 0.5)
         end
@@ -1374,7 +1379,7 @@ _MainHBConnection = RunService.Heartbeat:Connect(function()
                 local lbl = Instance.new("TextLabel")
                 lbl.Size = UDim2.new(1, 0, 1, 0); lbl.BackgroundTransparency = 1
                 lbl.Text = "!"; lbl.TextColor3 = Color3.fromRGB(255, 0, 0)
-                lbl.TextStrokeTransparency = 0; lbl.Font = Enum.Font.GothamBold
+                lbl.TextStrokeTransparency = 0; lbl.Font = FONT_HEAD
                 lbl.TextSize = 40; lbl.Parent = bb
             end
         elseif warn then
