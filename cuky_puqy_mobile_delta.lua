@@ -306,7 +306,7 @@ ScreenGui.IgnoreGuiInset = true
 
 -- External image URLs are resolved to executor custom assets when supported.
 -- If the executor blocks downloads, the text fallback remains visible and the UI still works.
-local MENU_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
+local MENU_LOGO_URL = "https://i.ibb.co.com/HDxwfDRR/photo-2026-11-20-21-51-15.jpg"
 local MINIMIZED_LOGO_URL = "https://i.ibb.co.com/PZyLNGKh/photo-2026-11-20-21-51-11.jpg"
 local function resolveCustomImage(url, filename)
     local getAsset = getcustomasset or getsynasset
@@ -375,7 +375,7 @@ end
 local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(390, 800)
 local FRAME_W = isMobile and math.min(430, math.max(320, viewport.X - 24)) or 520
 local FRAME_H = isMobile and math.min(360, math.max(280, math.floor(viewport.Y * 0.45))) or 360
-local SIDE_W  = isMobile and 104 or 128
+local SIDE_W  = isMobile and 112 or 136
 
 local TOGGLE_H  = isMobile and 76 or 64
 local TOGGLE_W  = isMobile and 62 or 68
@@ -417,7 +417,7 @@ addStroke(Sidebar, C.border, 1)
 local Logo = Instance.new("TextLabel")
 Logo.Parent                 = Sidebar
 Logo.BackgroundTransparency = 1
-Logo.Position               = UDim2.new(0, 4, 0, 58)
+Logo.Position               = UDim2.new(0, 4, 0, 59)
 Logo.Size                   = UDim2.new(1, -8, 0, 22)
 Logo.Font                   = FONT_BRAND
 Logo.Text                   = "CUKY PUQY"
@@ -430,12 +430,13 @@ MenuLogo.Name = "MenuLogo"
 MenuLogo.Parent = Sidebar
 MenuLogo.BackgroundColor3 = C.card
 MenuLogo.BorderSizePixel = 0
+MenuLogo.ImageColor3 = C.white
 MenuLogo.Position = UDim2.new(0.5, -24, 0, 8)
 MenuLogo.Size = UDim2.new(0, 48, 0, 48)
 MenuLogo.ScaleType = Enum.ScaleType.Crop
 MenuLogo.ZIndex = 3
 addCorner(MenuLogo, 24)
-local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu")
+local menuAsset = resolveCustomImage(MENU_LOGO_URL, "menu_v2")
 if menuAsset then
     MenuLogo.Image = menuAsset
 end
@@ -448,8 +449,8 @@ SearchBox.Name = "SearchFeature"
 SearchBox.Parent = Sidebar
 SearchBox.BackgroundColor3 = C.card
 SearchBox.BorderSizePixel = 0
-SearchBox.Position = UDim2.new(0, 8, 0, 88)
-SearchBox.Size = UDim2.new(1, -16, 0, 25)
+SearchBox.Position = UDim2.new(0, 9, 0, 91)
+SearchBox.Size = UDim2.new(1, -18, 0, 27)
 SearchBox.Font = Enum.Font.Gotham
 SearchBox.Text = ""
 SearchBox.PlaceholderText = "Search feature..."
@@ -461,11 +462,19 @@ SearchBox.ZIndex = 4
 addCorner(SearchBox, 5)
 local searchStroke = addStroke(SearchBox, C.border, 1); searchStroke.Transparency = 0.25
 
-TabContainer.Position               = UDim2.new(0, 7, 0, 122)
-TabContainer.Size                   = UDim2.new(1, -14, 1, -130)
+local SidebarDivider = Instance.new("Frame")
+SidebarDivider.Name = "SidebarDivider"
+SidebarDivider.Parent = Sidebar
+SidebarDivider.BackgroundColor3 = C.border
+SidebarDivider.BorderSizePixel = 0
+SidebarDivider.Position = UDim2.new(0, 10, 0, 82)
+SidebarDivider.Size = UDim2.new(1, -20, 0, 1)
+
+TabContainer.Position               = UDim2.new(0, 9, 0, 128)
+TabContainer.Size                   = UDim2.new(1, -18, 1, -136)
 local TabListLayout = Instance.new("UIListLayout")
 TabListLayout.Parent  = TabContainer
-TabListLayout.Padding = UDim.new(0, 7)
+TabListLayout.Padding = UDim.new(0, 9)
 
 -- ========================
 -- CONTENT AREA
@@ -677,7 +686,7 @@ for _, t in pairs(tabs) do
     local btn = Instance.new("TextButton")
     btn.Parent           = TabContainer
     btn.BackgroundColor3 = C.card
-    btn.Size             = UDim2.new(1, 0, 0, isMobile and 42 or 38)
+    btn.Size             = UDim2.new(1, 0, 0, isMobile and 44 or 40)
     btn.Font             = FONT_HEAD
     btn.Text             = t.name
     btn.TextColor3       = C.subtext
