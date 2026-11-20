@@ -48,6 +48,7 @@ local defaultConfig = {
     espGate                 = false,
     crosshairEnabled        = false,
     fovEnabled              = false,
+    fullBrightEnabled       = false,
     skillcheckEnabled           = false,
     skillcheckNotPerfectEnabled = false,
     targetFOV               = 100,
@@ -89,6 +90,41 @@ local crosshairEnabled        = cfg.crosshairEnabled
 local fovEnabled              = cfg.fovEnabled
 local skillcheckEnabled           = cfg.skillcheckEnabled
 local skillcheckNotPerfectEnabled = cfg.skillcheckNotPerfectEnabled
+local fullBrightEnabled           = cfg.fullBrightEnabled == true
+
+-- Snapshot only the Lighting properties this feature changes. This lets the
+-- toggle and unload path restore the values that were present when the script started.
+local fullBrightValues = {
+    Brightness = 3,
+    ClockTime = 14,
+    FogEnd = 100000,
+    GlobalShadows = false,
+    Ambient = Color3.fromRGB(185, 185, 185),
+    OutdoorAmbient = Color3.fromRGB(185, 185, 185),
+    ExposureCompensation = 0.25,
+    EnvironmentDiffuseScale = 1,
+    EnvironmentSpecularScale = 1,
+}
+local originalLighting = {}
+for property in pairs(fullBrightValues) do
+    local ok, value = pcall(function() return Lighting[property] end)
+    if ok then originalLighting[property] = value end
+end
+
+local function applyFullBright(enabled)
+    for property, brightValue in pairs(fullBrightValues) do
+        local value = enabled and brightValue or originalLighting[property]
+        -- Lua's `and/or` idiom cannot represent false, so preserve GlobalShadows=false explicitly.
+        if enabled and property == "GlobalShadows" then value = false end
+        if value ~= nil then
+            pcall(function() Lighting[property] = value end)
+        end
+    end
+end
+
+if fullBrightEnabled then
+    applyFullBright(true)
+end
 
 local isMouseDown      = false
 local isRightMouseDown = false
@@ -106,6 +142,7 @@ local function saveAll()
         espGate                 = espGate,
         crosshairEnabled        = crosshairEnabled,
         fovEnabled              = fovEnabled,
+        fullBrightEnabled       = fullBrightEnabled,
         skillcheckEnabled           = skillcheckEnabled,
         skillcheckNotPerfectEnabled = skillcheckNotPerfectEnabled,
         targetFOV               = targetFOV,
@@ -142,6 +179,8 @@ local trapHighlights    = {}
 
 local function _doUnload()
     ScriptRunning = false
+    applyFullBright(false)
+    pcall(function() if Camera then Camera.FieldOfView = defaultFOV end end)
     if HeartbeatConnection  then HeartbeatConnection:Disconnect();  HeartbeatConnection  = nil end
     if VisibilityConnection then VisibilityConnection:Disconnect(); VisibilityConnection = nil end
     if _RenderConnection    then _RenderConnection:Disconnect();    _RenderConnection    = nil end
@@ -999,21 +1038,30 @@ local updateCrosshairUI = createToggle(ESPFrame, "+", "Custom Crosshair", xhBase
     crosshairEnabled = v; saveAll()
 end)
 
+local lightBase = xhBase + 28 + GAP + 12
+createSection(ESPFrame, "PENCAHAYAAN", lightBase)
+local updateFullBrightUI = createToggle(ESPFrame, "☼", "Full Bright", lightBase + 28, fullBrightEnabled, function(v)
+    fullBrightEnabled = v
+    applyFullBright(v)
+    saveAll()
+end)
+
 -- ========================
 -- RESET CONFIG
 -- ========================
 local function doReset()
     espPlayer = false; espPallet = false; espWindow = false
     espHook = false; espGenerator = false; espGate = false
-    crosshairEnabled = false; fovEnabled = false
+    crosshairEnabled = false; fovEnabled = false; fullBrightEnabled = false
     skillcheckEnabled = false; skillcheckNotPerfectEnabled = false
     targetFOV = 100
+    applyFullBright(false)
     saveAll()
     -- clear trap highlights
     for obj in pairs(trapHighlights) do removeTrapHighlight(obj) end
     updateESPPlayerUI(false); updateESPPalletUI(false); updateESPWindowUI(false)
     updateESPHookUI(false); updateESPGenUI(false); updateESPGateUI(false)
-    updateFOVUI(false); updateCrosshairUI(false)
+    updateFOVUI(false); updateCrosshairUI(false); updateFullBrightUI(false)
     updateSkillcheckUI(false); updateSkillcheckNotPerfectUI(false)
     fovInput.Text = "100"
     cfgStatusLbl.Text = "CONFIG DIRESET"; cfgStatusLbl.TextColor3 = C.accent
